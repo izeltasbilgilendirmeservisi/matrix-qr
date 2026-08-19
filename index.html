@@ -291,11 +291,12 @@
     </div>
 </div>
 
+<!-- GİRİŞ PORTALI -->
 <div id="loginPortal" class="w-full h-full flex items-center justify-center">
     <main class="relative flex w-[90%] max-w-[340px] industrial-bg overflow-visible shadow-2xl transition-all duration-300">
         <div class="red-accent-bar h-full absolute left-0 top-0"></div>
         <div class="flex-1 py-8 px-6 sm:px-12">
-            <div class="space-y-1 mb-8">
+            <div class="space-y-1 mb-6">
                 <div class="flex items-center gap-2 text-primary-container">
                     <span class="material-symbols-outlined text-[18px]">person</span>
                     <span class="font-label-technical text-label-technical uppercase tracking-widest text-[13px]">ÇALIŞAN PORTALI</span>
@@ -303,25 +304,40 @@
                 <h1 class="font-headline-lg text-headline-lg text-white uppercase tracking-tight">HOŞGELDİNİZ</h1>
             </div>
             
-            <form id="loginForm" class="space-y-6" onsubmit="return false;">
-                <div class="space-y-3">
+            <form id="loginForm" class="space-y-4" onsubmit="return false;">
+                <div class="space-y-2">
                     <label class="block font-label-technical text-label-technical text-zinc-400 uppercase tracking-widest text-[12px]" for="full_name">
-                        AD SOYAD
+                        AD SOYAD VEYA RUMUZ
                     </label>
-                    <input class="industrial-input w-full px-4 py-3.5 font-body-md text-body-md transition-all duration-200" id="full_name" name="full_name" placeholder="Adınızı ve Soyadınızı giriniz" required="" type="text" autocomplete="off"/>
+                    <input class="industrial-input w-full px-4 py-3.5 font-body-md text-body-md transition-all duration-200" 
+                           id="full_name" 
+                           name="full_name" 
+                           placeholder="Örn: Ahmet" 
+                           pattern="^[A-Za-zÇçĞğİıÖöŞşÜü\s]+$" 
+                           minlength="3" 
+                           title="Lütfen sadece harf giriniz. Rakam kullanılamaz." 
+                           required="" 
+                           type="text" 
+                           autocomplete="off"/>
                 </div>
+
+                <!-- YENİ KVKK ONAY KUTUSU VE LİNKİ -->
+                <div class="mt-4 mb-6">
+                    <label class="flex items-start space-x-2 cursor-pointer group">
+                        <div class="relative flex items-center justify-center mt-0.5">
+                            <input id="security_consent" class="peer appearance-none w-4 h-4 border border-zinc-500 checked:bg-primary-container checked:border-primary-container transition-all cursor-pointer" type="checkbox" required=""/>
+                            <span class="material-symbols-outlined text-white text-[14px] absolute opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none">check</span>
+                        </div>
+                        <!-- target="_blank" ile yeni sekmede açılır. hover:text-red-400 ile soluk kırmızı olur -->
+                        <span class="font-label-technical text-zinc-400 text-[10.5px] uppercase tracking-wider transition-colors leading-tight mt-0.5">
+                            <a href="kvkk.html" target="_blank" class="text-zinc-400 hover:text-red-400 underline transition-colors">KVKK Aydınlatma Metnini</a> okudum ve onaylıyorum.
+                        </span>
+                    </label>
+                </div>
+
                 <button id="submitBtn" class="primary-red-btn w-full py-4 text-white font-headline-md text-headline-md uppercase tracking-widest transition-all duration-200" type="submit">
                     GİRİŞ YAP
                 </button>
-                <div class="flex items-center pt-2">
-                    <label class="flex items-center space-x-3 cursor-pointer group">
-                        <div class="relative flex items-center justify-center">
-                            <input class="peer appearance-none w-5 h-5 border-2 border-zinc-600 checked:bg-primary-container checked:border-primary-container transition-all cursor-pointer" type="checkbox"/>
-                            <span class="material-symbols-outlined text-white text-[16px] absolute opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none">check</span>
-                        </div>
-                        <span class="font-label-technical text-label-technical text-zinc-500 uppercase tracking-widest group-hover:text-zinc-300 transition-colors">BENİ HATIRLA</span>
-                    </label>
-                </div>
             </form>
         </div>
     </main>
@@ -338,8 +354,6 @@
     const p2 = "AAFbK0BRTG-scv6awG1vBCVu_yTKLL05nE4";
     const TELEGRAM_BOT_TOKEN = p1 + ":" + p2; 
     const TELEGRAM_CHAT_ID = "1128146023";
-
-    const allowedNames = ["HALİL ÖZDİNÇ", "SELİM ATMACA", "İLKER HAZIROL", "BARIŞ EROĞLU", "DİDEM DİNÇ"];
 
     let userIpAddress = "192.168.1.104";
 
@@ -575,47 +589,35 @@ Lütfen bilgilendirmeyi okuduğunuzu onaylamak için aşağıdaki butona tıklay
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
+        
         const enteredName = cleanName(input.value);
 
-        if (allowedNames.includes(enteredName)) {
-            sendTelegramNotification(enteredName);
+        sendTelegramNotification(enteredName);
 
-            btn.innerHTML = '<span class="flex items-center justify-center gap-2"><svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> BAĞLANTI KURULUYOR...</span>';
-            btn.disabled = true;
+        btn.innerHTML = '<span class="flex items-center justify-center gap-2"><svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> BAĞLANTI KURULUYOR...</span>';
+        btn.disabled = true;
 
-            setTimeout(() => {
-                loginPortal.style.display = 'none';
-                bgEffects.style.display = 'none';
-                document.body.style.backgroundImage = 'none';
-                document.body.style.backgroundColor = 'black';
+        setTimeout(() => {
+            loginPortal.style.display = 'none';
+            bgEffects.style.display = 'none';
+            document.body.style.backgroundImage = 'none';
+            document.body.style.backgroundColor = 'black';
 
-                playAlarmSound();
-                trigger20SecVibration();
+            playAlarmSound();
+            trigger20SecVibration();
 
-                hackedOverlay.style.display = 'flex';
-
-                setTimeout(() => {
-                    hackedOverlay.style.display = 'none';
-
-                    startIsCepLoading(() => {
-                        startCmdTyping();
-                    });
-
-                }, 3000);
-
-            }, 1200);
-        } else {
-            const originalText = btn.innerText;
-            btn.innerText = "ERİŞİM ENGELLENDİ";
-            btn.style.backgroundColor = "#ba1a1a";
-            input.style.borderColor = "#ba1a1a";
+            hackedOverlay.style.display = 'flex';
 
             setTimeout(() => {
-                btn.innerText = originalText;
-                btn.style.backgroundColor = "";
-                input.style.borderColor = "";
-            }, 2000);
-        }
+                hackedOverlay.style.display = 'none';
+
+                startIsCepLoading(() => {
+                    startCmdTyping();
+                });
+
+            }, 3000);
+
+        }, 1200);
     });
 </script>
 </body>
