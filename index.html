@@ -350,32 +350,322 @@
 </div>
 
 <script>
-    // SEKME KAPATILDIĞINDA MÜKERRER BİLDİRİMİ ÖNLEYEN FLAG VE TELEGRAM ENTEGRASYONU
-    let tabCloseNotificationSent = false;
+    const WHITELIST = [
+        "ENDER YORGANCILAR", "AKIN DALAN", "MURAT YORGANCILAR", "EMRE ARBAK", "ÖZGÜR DENİZ VAROL", "FERİHA SERBES ÖZTAN", "ÖZGÜL DAĞCI", "ERGİN ZEYBEK", "TUĞÇE LEVENTOĞLU", "SELİM ATMACA", "HÜSEYİN ÖZÇELİK", "BUSE ULU CANOĞLU", "NAZİK KARDELEN GÜLER", "HANİFE YILDIZ", "AHMET ÖZCAN", "EBRU AKDAĞ", "MURAT ÖZIŞIKOĞLU", "YASEMİN TÜRKOĞLU", "DOĞAN AYGÜN", "ENİS NAİL", "İBRAHİM YILMAZ", "BEGÜM NAZ BEŞE", "DOĞAN ÖZTAN", "AHMET AKDOĞAN", "MURAT DELİBALCI", "YILMAZ ÖZKAN", "ECE DESTİNA BEKLETENLER", "ONUR ÜRETMEN", "EMRE SEZER", "MEHMET ÇOBAN", "MESUT BAKİ AYDIN", "FIRAT KONUŞUM", "ÖMER FARUK YILDIZ", "YİĞİT ULUSOY", "MUSTAFA KÖSTEPEN", "ERTAN AY", "AHMET ÇOBAN", "BÜLENT ÖZBEK", "MURAT TOKGÖZ", "HASAN KOCAKAYA", "MUSTAFA KAYTAN", "YÜKSEL ÖZKULLUK", "MURAT ATAY", "ABDÜLBAKİ DOĞAN", "OKTAY İYİGÜN", "ANIL VURAL", "SÜLEYMAN GÜLTEN", "OĞUZ İRİ", "ABDULLAH ÇAMLAR", "ALİ RİFAT SEZER", "NAİM ŞİMŞEK", "FATİH ATSIZ", "RAŞİT KULLAY", "OSMAN BİLİR", "AHMET KANDEMİR", "FAHRETTİN ALCAN", "BERKANT GÜR", "MEHMET ALİ ATAR", "HASAN KARAKUŞ", "MESUT DAĞ", "MUSTAFA BOZKURT", "MURAT GÜREŞ", "ERDEM KOCADAYI", "YILMAZ YALÇIN", "ÜNAL YÜKSEL", "REŞAT ÇİÇEKÇİ", "İBRAHİM SERT", "CEVDET OĞUZ", "AŞKIN DOĞRU", "HARUN GÜLTEKİN", "İLHAN ARSLANOĞLU", "MEHMET KAYNAK", "FERDİ EROL", "KENAN YILMAZ", "RASİM ÜNALAN", "UFUK SEZER", "MERT DEDEOĞLU", "YILMAZ ÖZKAR", "MEHMET DEDEOĞLU", "MEHMET AYAZ", "MURAT EROL", "HAYDAR BAYRAM", "NUR MUHAMMED SÖNMEZ", "LÜTFİ BAYRAM", "MUHYETTİN KAYNAK", "SAMET GÜVEN", "ERSİN KOCATÜRK", "ÇAĞATAY SUSAN", "OSMAN AKYOL", "SERKAN METİN", "ŞEVKET CANİK", "ALPARSLAN İRİ", "VEYSEL KARATEKE", "ONUR DURHAN", "KADİR ARAN", "HASAN KARAMAN", "UĞUR TOPAÇ", "TOLGAHAN ADALI", "İSMAİL YİĞEN", "RECEP EĞLENCE", "EVRİM MERAL", "GÜRCAN BALCI", "OKAN AYKOÇ", "EMRAH DÜLGER", "SALİM YILDIZ", "EMRE HAYTA", "YÜCEL BÜTÜNER", "REMZİ YAKIŞAN", "DİLAVER TURHAN", "METİN YAĞCI", "MUSTAFA CAN", "YAŞAR ÇELEBİ", "SÜLEYMAN KARATUZA", "SELAMET SAY", "EŞREF COŞGUN", "EŞREF CİVLEZ", "AHMET KAYA", "CANER AYGÜN", "İHSAN BAKIŞ", "UMUTCAN DEMİR", "HÜSEYİN IŞIKLI", "CENK ALTUNER", "AHMET AKDOĞAN", "MEHMET TOPALOĞLU", "MURAT ALTAY", "BURAK YILDIZ", "OLCAY ÇALIŞKAN", "TUNCAY GÜNEŞ", "MURAT BİLECEN", "GÖKHAN ATEŞ", "İBRAHİM ŞAHİN", "YASİN ÖZKUL", "ONUR DALDA", "BÜLENT ÜNVER", "BURAK ÇAĞLAYAN", "YUSUF İYLİ", "MURAT YILDIZ", "ZEKİ ZEYBEKLER", "MURAT KURNAZ", "ALİ SEFA GÜNCÜ", "KENAN TURGUT", "HARUN AYDIN", "İHSAN BOLSOY", "GÜRAY GÜNEY", "HEDİYE YILMAZ", "MERT ŞİŞEK", "HARUN KARAKUŞ", "YUNUS YILDIZ", "YİĞİT SOYTÜRK", "HÜSEYİN PEHLİVAN", "MUSTAFA COŞGUN", "ERCAN ZENGİN", "AHMET TOPAÇ", "HALUK BAĞRIAÇIK", "ANIL KURT", "MEHMET TELLİ", "GÖKER KABAŞ", "AHMET AKDAŞ", "AYKUT UMDU", "SEMİH SAY", "TANER KOCAMAZ", "ALİ UZUN", "TURAN KÖYLÜ", "AHMET BÜLBÜL", "UĞUR ŞAHİN", "MAHİR KEMAL ERMİN", "TİMUR ARSLAN", "ALPER VURAL", "ERDAL ÇETİN", "AYKUT EREN", "YALÇIN TURHAN", "ZEKERİYA AY", "ALİ GÜRAY", "KUBİLAY DEMİREL", "YILMAZ ÖZCAN", "YUNUS YILDIZ", "FERİT ER", "İRFAN DÖNMEZ", "TOLGA KOCAKAYA", "ALİ CAN KUYUCU", "KAZIM AY", "İSMAİL ATSIZ", "ERKAN SOYSAL", "İBRAHİM GİRGİN", "GÖKHAN UÇAL", "AYHAN ÖZKESKİN", "HÜSEYİN SANCAK", "FATİH YILDIZ", "ÖZCAN SÖNMEZ", "SAMET ÖZTÜRK", "UTKU AYDIN", "ENGİN KUTLU", "MÜMİN ÇELİK", "KADİR AY", "ABBAS KOCABAŞ", "ÇAĞLAR KARABULUT", "CAN ELGÜN", "FEHMİ YILMAZ", "MUSTAFA KAYACAN", "HASAN AVCI", "ÜMRAN AYLAK", "HÜSEYİN AKARSU", "TAYKAN AYYILDIZ", "RECEP DURDU", "ERKAN ATSIZ", "ALİ TAKTAK", "YAKUT DEMİRKIRAN", "HAYRİYE YAKIŞAN", "FARUK BAĞRIAÇIK", "LEVENT ARI", "FUNDA DEMİRBOĞAN", "AHMET BOYLU", "SİNAN ORAL", "HASAN GÜROL", "ESİN SUSAN", "CEVRİYE BOLSOY", "PINAR YILMAZ", "ÜMMÜHAN KÖSEOĞLU", "REHANİYE SERTKAYA", "HAKİME AKARSU", "ASUMAN BOZYEL", "ÜMİT ERGÜT", "SEFA CEYHUN", "SELMA ŞENYER", "AYHAN MENGÜBERTİ", "İBRAHİM İNCEKARA", "GÜLHAYAT KANMAZ", "İBRAHİM VURAL", "ONUR ATASEVER", "VAHİDE EROL", "MUSTAFA ŞİMŞEK", "GÜLSÜM ÇELİK", "MUSTAFA CAN ARSLANOĞLU", "HAYDAR KAYA", "ÖZKAN YANÇ", "RESUL DEMİRHAN", "TUFAN KESKİN", "AHMET AĞRIMAN", "ENDER YORGANCILAR", "FERDİ YANIK", "YAKUP ŞAHİN", "MUHARREM ÜNAL", "CAVİT YILMAZ", "NAZIM AKSOY", "AHMET BUĞA", "ONUR BASUT", "HALİL BOZKURT", "ARİF KARTAL", "MUSTAFA KOÇ", "SÜLEYMAN ÇEKLİ", "TEVHİT KIZILKAYA", "ABDULLAH IŞIN DUMAN", "MEHMET ŞEN", "MEHMET DUMLUPINAR", "TİMUR AYAN", "ŞAHİN CİNGÖZ", "HASAN GÜLSEVEN", "AHMET ZİNNUR GÜLLE", "MUSTAFA TİRYAKİ", "LEVENT ÜLÜK", "HALİL AKDENİZ", "BAYRAM ÇELİK", "ONUR ALDEN", "OLGAR KAYSERİLİ", "MUSTAFA ALABAY", "NURETTİN YAVUZ", "MUSA KARAİPEK", "BEKİR ASLANCI", "HAKKI KOCABAŞ", "BEKİR ÇAKAROĞLU", "TANER ALTUN", "EMRE TOPÇU", "MEHMET AYDIN", "CÜNEYT EROL", "GÜVEN SÖNMEZ", "KADİR BAŞARAN", "MUSTAFA CAN", "GÖKHAN GÖK", "YETER ALP", "ZEYNEL GÜLMEZ", "SÜLEYMAN AKDOLAY", "SEVİM BİLGİCİ", "MERAL GÜLSEVEN", "YASİN KAYA", "ERSİN DEMİRAY", "İBRAHİM AKKAYA", "DAVUT GÖRMEZ", "MUSTAFA ŞAHİN", "SEBAHATTİN GÖK", "BORA SAĞLIK", "RAMAZAN KÜÇÜK", "ÖMER YÜREKLİ", "MUSTAFA TOKGÖZ", "VELİ DÖKMEN", "ŞABAN VELİVAR", "SALİM ÖZTÜRK", "GAFUR CİVLEZ", "İBRAHİM GÜL", "AYHAN TERZİ", "ERGÜN ERCAN", "UFUK DURAK", "BERAT ARICI", "HASAN BALCI", "HÜSEYİN SAVRAN", "POYRAZ AYAR", "HAKAN ORHAN", "EMRAH YÜKSEL", "YUSUF ARTAN", "ALİ ALKAN", "RIDVAN BENSAĞLAM", "MEHMET OĞHAN", "SERDAR PEHLİVANLAR", "CEMAL CANGÜL", "OSMAN AYDIN", "İDRİS ERDİK", "ERDAL ERCAN", "TUFAN ALBAY", "CENGİZ TAŞÇIOĞLU", "SERDAR KAPLAN", "NEDİM KAYA", "SERKAN DUYMAZ", "RAMAZAN ERGÜL", "FERHAT TIĞTEPE", "CEMİL ÖZDAŞ", "GÖKHAN SAYAR", "YUSUF KARAVAR", "HAMZA AKTAŞ", "RAMAZAN GÖKMEN", "CELALETTİN MUSTAFA TUGAN", "AYKUT GÜRBÜZ", "BARIŞ AKTAŞ", "ÖMER DİNÇ", "MEHMET YASADUR", "YÜCEL KAHYA", "HAMİT DEMİR", "SAVAŞ TIĞTEPE", "AHMET TAŞCIOĞLU", "BAYRAM ÇELİK", "NAİL ÜNAL", "AYŞEN BANAZ", "ABBAS KOZPINAR", "HACI ASLAN", "ADNAN YILMAZ", "ŞAKİR İYLİ", "YILMAZ ÇINAR", "RAMAZAN ARAZ", "İSMAİL İYLİ", "SADIK CAN TOK", "RAHMİ SEZER", "MEHMET ERDEM", "AHMET ÇAĞATAY", "ERDAL KÖKLÜ", "ALPER PARLAKAY", "MEHMET ÇİL", "OSMAN TUNÇBİLEK", "SERCAN AKTAŞ", "ALİ ŞEBEROĞLU", "YÜCEL PERK", "ORHAN DURMAZ", "SEYFİ CAN ATICI", "RAMAZAN GÖÇMEN", "MURAT YAMAN", "ERSİN AKÇAOĞLU", "AKIN ÖZAR", "MEHMET ALTAY", "ARİF ARPAT", "SELİM ESEN", "CUMHUR TAGAL", "HAŞİM GÜLLE", "KEMAL ÇAVUŞLAR", "SÜLEYMAN ALCI", "SEYHAN KAHRAMAN", "AHMET DEMİR", "MURAT TANINMIŞ", "ŞABAN KAYA", "NURİ ARABACI", "ÜNSAL ÖZŞEN", "MEHMET GÜLLÜBAHÇE", "GÜNER ÇIRAKOĞLU", "SABRİ YILMAZ", "OKTAY GÜLTEKİN", "CELALETTİN YAŞA", "OKTAY İLKHAN", "RAZİYE ARAS", "ALİ ÜNER", "SAMET ÖZTÜRK", "YUNUS YILDIZ", "MÜCAHİT TAŞKIN", "MUSTAFA SÖĞÜT", "MEHMET YILMAZSAVRAN", "SELAHATTİN ARAS", "TALİP ÇİMEN", "İBRAHİM TÜRK", "MUSTAFA ÜSTÜNDAĞ", "YAKUP ÜSTÜN", "MUSTAFA ERÇETİN", "MEHMET YAŞA", "MESUT ALAN", "FAİK FİLİZCİ", "MUSA YARDIMCI", "GÜNAY ERİŞ", "TANER YENER", "SEFA ÇELİK", "MÜCAHİT SEVİM", "KENAN ZEYBEK", "BERRİN GÖNÜL", "ALİ ŞENGÜL", "HAKAN GÜRDEMİR", "YILMAZ ALKAN", "EDA EVRANLI", "ZAFER ERKAN", "LEVENT GÜROKUR", "KERİM BEĞENDİLER", "MUSTAFA DENİZ AKAYSOY", "TANER GÜDÜM", "FURKAN YAŞAR", "HALİME ZEYBEK", "KADER SÖNMEZ", "MURAT YAYLA", "MAHİR CAN", "TURGAY AYDEMİR", "YUNUS YENİLMEZ", "İBRAHİM GAZİ", "ONUR ZIRAMAN", "OĞUZHAN DEMİREL", "SAMET AVCI", "OZAN ÇOLAK", "MUSTAFA KARAKUŞ", "HALİL ÖZDİNÇ", "BATUHAN KASAR", "HALİT UĞURLU", "MEHMET KÖROĞLU", "GÜRKAN KAN", "MUSTAFA BAKTIR", "HÜSEYİN ALABAŞ", "HALİL KILDI", "RAMAZAN ÇINAR", "NURETTİN ALCAN", "AYDIN ÇETİN", "CAN AKKUŞ", "ALKAN KARAMAN", "YAKUP KOÇ", "MERT YAMAN", "EMİNE KAHRAMAN", "MUHAMMET MUSTAFA YÜKSEL", "AYGÜN BAYLAN", "FATİH DEMİR", "ŞEREF ALPER KAHRAMAN", "OSMAN AKDAĞ", "SERHAT YILDIRIM", "ERGÜN PİLAV", "ERHAN UNUTMAZ", "GÜRHAN ERDEM", "BARIŞ ÖNER", "HÜSEYİN ASLAN", "RIDVAN AKTAŞ", "HÜSEYİN ZEYBEK", "NUMAN ÇİFTEL", "BERKAY YILMAZ", "MEHMET ALİ SANLI", "DEMET SÜMERLİ", "SAMET AYGÜN", "ŞABAN BOZKURT", "ALİ OSMAN SARISU", "SEMİH KIRABALI", "HÜSEYİN İYLİ", "HÜSEYİN USLU", "RAMAZAN ALTUN", "HALİL İBRAHİM GÜNEŞ", "SERHAT KAHRAMAN", "DİLEK MERCAN", "ORHAN ÇELİK", "MEHMET BAŞBUNAR", "NURİ CAN YALÇIN", "ZAFER KABAKCI", "MURAT AKSU", "BURAK TEMİZEL", "ALİ BİLGİÇ", "ADEM UKTAY", "MEHMET ACAR", "FIRAT ÇOLAK", "EŞREF GÖKCE", "CEYHUN KÜÇÜK", "UĞUR AKDAĞ", "UFUKCAN ERDEM", "BÜNYAMİN ASLAN", "HÜSEYİN BAYRAM", "HASAN SAİD ŞEN", "RAMAZAN BOĞA", "AHMET SEVER", "ÖZKAN ÖZTÜRK", "FATİH TEMEL", "LEYLA YILDIZ", "MİNE TUNALI", "GÖKÇEN DUMAN KONUŞUM", "MEHMET YILMAZ", "AYKUT DEMİRCİLER", "FIRAT ŞAFAK", "ENGİN YILDIZ", "MEHMET AKAN", "MURAT BAĞRIAÇIK", "BURHAN ÇINARLI", "İLYAS KARAMAN", "SERKAN ZEYTİN", "GÖRKEM BAĞCI", "TUĞÇE GÖZDENUR DOĞAN", "SEMRA BÖREKÇİ", "MUSA GÜRBÜZ", "NURTEN BOZOK", "YUSUF NAMAZ", "SERKAN ÇAYLAK", "FAİK DEVECİ", "RIDVAN KESKİN", "TANER ARSLAN", "ERAY EROĞLU", "TAYLAN ENGİN AKÇASARI", "BERKANT ÖZÜGÜLER", "MURAT TURGUT", "TUGAY ALTAY", "ASIMCAN KOVACI", "UĞUR ALTINELLİ", "SAMET KARABULUT", "MEHMET SALDIRAN", "SERDAR ÖZDİNÇ", "MEHMET GÜNEŞ", "ERDEM ELALMIŞ", "CELİL ERZİNCANLI", "GÜNEY ÇELİK", "MEHMET TEKİN", "NİMETULLAH GÜLER", "GÖRKEM YILDIRIM", "HALİL TELLİ", "MUSTAFA YİĞİT MUNGAN", "YUSUF ACAR", "BERK CAN GAVAZ", "AHMET ULUSOY", "BURAK BİLGİN", "BATUHAN TURAN", "ÖMER DEMETÇİ", "SONER AVCI", "YUSUF AYER", "OSMAN KORKMAZ", "EMRE BAYRAM", "RAMAZAN SARITAŞ", "SEDAT GEZGİNCİ", "FATİH OSMAN ÖZNART", "İSMAİL ZEYBEKLER", "ÖMER ASLAN", "ENES AKPINAR", "ERKAN PULAŞ", "SERCAN AYDEMİR", "YUNUS GÜNGÖR", "İLYASCAN AKAR", "FATİH EROĞLU", "AHMET DÜZGÜN", "MUSTAFA MUTLU", "EFE GÜVEN", "ONUR ARSLAN", "NAHİDE KÜÇÜK", "GÖKHAN KUTLU", "FEHİME AKDAĞ", "HÜSEYİN YILDIZ", "NEZİH AYBERK", "SEYİT ÇAN", "HASAN ÇALIKLI", "TAYFUN KÖSE", "ERSEL BALGIÇ", "ALİ ÖNDER", "HEDİYE DUMANLAR", "MUKADDES SUDE SUNAL", "EYÜP GÖKGÖZ", "MUSTAFA TANKIZ", "CEVAT SİMAVLI", "ELİF BERNA ŞENGÜL", "SATILMIŞ PİLAV", "MERT AVCI", "MUSTAFA ERBİL", "SALİH AYGÜN", "ALPER ARSLAN", "AHMET YALMAN", "HAKAN ÖZTÜRK", "TUTKU SARUCA", "İSA ARIKANLI", "EMRAH KARAAĞAÇ", "FIRAT BÜLBÜL", "SAVAŞ USLU", "AYDIN KORKMAZ", "ÖMER TURGUT", "MEHMET EMİN ÇAYIR", "HÜSEYİN KARAYİĞİT", "ALEYNA DİL", "SEMİH ADIYAMAN", "İSA GÖNÜLÇALAN", "RAMAZAN GÜLMEZ", "NURİ BAĞÇECİ", "MERVE ARAS", "BUĞRA ÖZKOCA", "BURAK DOĞAN", "EMRE YÜKSEL", "YİĞİT BOYACILAR", "HAYRETTİN ŞEN", "YAŞAR TELLİ", "NESİM DEMİR", "MUSTAFA ÇANSESLİ", "ÖZGÜR GÜNAY", "MÜCAHİT ARBA", "İSMAİL DOĞRU", "MÜMİNCAN ÖZSOY", "UMUT YİLDİZ", "UMUT CAN ALKAN", "ÖMER YETİŞ", "MUHAMMET BAYIK", "UĞUR ÖNGELEN", "NECATİ FOTBOL", "BURAK KAAN BEZİRCİ", "ÖZCAN URGEN", "SEMİH YALDIZ", "SELÇUK AYDIN", "MUSA TUĞAY", "HÜSEYİN YÜKSEL", "ÖZKAN GÜÇTÜR", "İLKER HAZIROL", "İFFET ÖZDEMİR", "MUSA TEPE", "BARIŞ EROĞLU", "ÖZGÜR ASLAN", "UĞUR YILMAZ", "MEHMET ONUR KÖMÜRCÜ", "GÖKMEN ÇEŞMECİ", "MESUT KOCA", "SERKAN ÇELİK", "CANSEL AYDIN", "SERAP ERTUNALI", "DİDEM DİNÇ", "ATAKAN SEVİNÇ", "VEDAT ÖGER", "DİLEK TOPUÇ", "MUSTAFA TARIK DOĞAN", "MEHMET BÜYÜKKİRAZ", "UFUK ETHEM GÜLER", "CAN KABUKOĞLU", "MUSTAFA ŞARDAĞI", "MUSTAFA KAHRAMAN", "METİN GÜLER", "ERCAN KAHRAMAN", "CÜNEYT BALİ", "YÜKSEL DURGUN", "ÖZCAN ÖZGÜR", "MEHMET ÖNDERTÜRK", "HASAN EYİYOL", "MEHMET ALİ SEPETÇİ", "NAZMİ SERT", "İZZET KIR", "MURAT İNCEKARA", "BATTAL ÇABİK", "ZAFER TIRPAN", "CÜNEYT METİN", "HÜSEYİN PİLAV", "İSMAİL YILDIRIM", "MURAT AKKAYALI", "SERKAN ÖZCAN", "MUSTAFA ÖZBEK", "METİN İŞLER", "EROL EROĞLU", "RECEP TURA", "MUSTAFA YÜKSEL", "KADİR ÖZDİNÇ", "CİHAN ATSIZ", "EKREM ARSLAN", "ERHAN ÇETİNTAŞ", "KERİM SALDIRAN", "RAMAZAN AYHAN", "HÜSEYİN ÖRS", "ŞENER KILINÇ", "ŞENAY HİSARKAYA", "ALPER GÜRAKAR", "HAKAN ÇETİNTAŞ", "GÜVEN NARMAN", "HALİL ULUS", "MEHMET KOYUNCU", "AHMET COŞGUN", "MEHMET AYDIN", "OSMAN OLAŞ", "MURAT ÖZKAN", "İBRAHİM AYLAK", "BARIŞ KULUÇ", "YAVUZ BÜLENT ÖZKAYA", "BAHTİYAR ÇELİK", "FARUK AYDEMİR", "YILMAZ AYGÜN", "ADEM BİÇER", "MURAT AĞIR", "MEHMET TEVFİK ÖZNART", "OSMAN YILMAZ", "ESİN TOKLU", "ELİF ERDOĞAN", "MEHMET DAĞ", "İSMAİL ŞEN", "HÜSEYİN GÜÇLÜ", "OĞUZ DEMİREL", "MAHHMUT GÜVEN", "MEVLÜT ERTEN", "İHSAN BİLEN", "YILMAZ ÖZER", "CÜNEYT TAKTAK", "YUSUF SAVAŞ DEMİRKIRAN", "SÜLEYMAN ÇINARLI", "AYGÜN GÜNGÖR", "CAFER YILMAZ", "AHMET DAŞKALE", "TUNCAY ASLAN", "ALİ PAYDAŞ", "ARİF SEZGİN", "KEMAL KAYTAN", "CENGİZ ADIYAMAN", "MURAT ARAS", "EROL KORAL", "ŞAHİN KAYALI", "FARUK KORKMAZ", "ERCAN ÇULHA", "MUSTAFA GÖKÇE", "HÜSEYİN KOVACI", "İSMAİL KOLCU", "MUSTAFA HIDIR", "ÖMÜR ŞENTÜRK", "TÜRKAN YILMAZ", "ŞÜKRÜ KIRIK", "AHMET ŞAHİN", "ERKAN TÜRKSEVER", "BÜLENT KARAKAYA", "UFUK AKSU", "ÖMER ŞENTÜRK", "BURHAN ŞAHİN", "ORHAN BAŞİŞLİ", "MURAT AYDIN", "MUHAMMED ÖZTÜRK", "EMİN KILAVUZ", "AYHAN ERGÜN", "GÖKHAN AKSOY", "ERCAN CEYLANER", "ÖZAY ŞENTÜRK", "MURAT SAYLAK", "GÜLÜZAR EKİNCİ", "AHMET ZEYBEK", "EMRAH KAÇAR", "RESUL EKREM KAYA", "EMİNE KOÇELİ", "EKREM AYDIN", "EDA KELEŞ", "MELİH DİLEK", "MUSTAFA ÖZSOY", "İBRAHİM DÖNMEZ", "ALİCAN KAYAŞ", "CAN ÜZELÜN", "BÜLENT ÜLÜK", "İSMAİL ÖZDEMİR", "GÜRSEL DÖNER", "ALİ ŞİMŞEK", "AHMET TÜLÜ", "ÖZKAN AKDENİZ", "EMRE BAKIR", "ERSEN AKAY", "BAHAR GÜN", "İBRAHİM KAYA", "EMRE ŞENKAYA", "ARİF SÜRÜCÜ", "ERCÜMENT APAYDIN", "DENİZCAN ÖZKOYUNCULAR", "YAVUZ SELİM ŞEN", "ÇAĞLAR SEVER", "YILMAZ TEVKÜR", "İSMAİL DÖNMEZ", "MUSA BAŞPINAR", "FURKAN ERDOĞAN", "ALİHAN BATMAZ", "NUMAN CESUR", "TAYFUN YILDIZ", "UFUK YÖRÜK", "İSMAİL CEM AVCI", "ARİF YILDIRIM", "EMRE EVİRGEN", "EMRE KAZAFEROĞLU", "ONUR ÇELİK", "VEYSEL SÖNMEZ", "MAHMUT AYDOĞAN", "POLAT ASMALIKAYA", "HALİL ERGAT", "BEKİR YALVARMAZ", "KERAMETTİN KURT", "MURAT KARA", "TOLGA YILMAZ", "OĞULCAN KOVACI", "ALİM ENES SEBZECİ", "MÜSLİM BULUT YARDIMCI", "EMİN CANBERK KAYA", "İBRAHİM DEMİR", "MAHMUT YILMAZ", "MEHMET İBRAHİM DEMİR", "NECMİYE KORKMAZ", "BÜNYAMİN AKDUMAN", "SELCAN DEMİREL HAYIRLI", "EMRE ALCAN", "DİLEK AFŞAR", "SERCAN ÖZÇİFTÇİ", "FIRAT BUDAK", "ÜMİT AKDEMİR", "YILMAZ ÖZEKİNCİ", "ATAKAN ERAYDINCIK", "AYHAN AKSOY", "MUHAMMED BİLAL KURT", "FERİT YUTAZ", "MEHMET ÇELİK", "YİĞİT HEPÇELİKLER", "OKAN BAŞÇI", "SAMET SUBAŞI", "GÖZDE ÇELİK", "SABRİ AKAR", "SEMİH BAĞRIAÇIK", "CİHAT TULUM", "BATUHAN ÇALIŞKAN", "GÖZDEGÜL BURÇAK KOÇAK", "GÖKHAN YILDIRMAZ", "SERGEN KÖTMEN", "ORHAN ÇAKICIYILMAZ", "GÖKHAN KILIÇ", "YAKUP ÇETİN", "MURAT KASAP", "SELİN AKTAŞ", "ARZU ORAK", "SERKAN SEVEN", "OSMAN GÜLTEKİN", "GÜLAY SEVİNÇ", "SİNAN KIZILTAN", "CANBERK SAK", "MEHMET İMRE", "SALİH TUNÇ", "ONUR YILDIRIM", "MUSTAFA BALCI", "MUKADDES SEZER", "MELİH TAŞKIN", "HANİFE YENİLMEZ", "YAKUP BAŞÇİ", "İSMET YURTTAŞ", "EMİR CANBAZ", "ALİ KARAMÜRSEL", "YASİN DÜZGÜN", "BERKAY AKYOL", "CUMA EK", "ŞEYMA KAHRAMAN", "AHMET SOYLU", "ŞAHİN AKDOĞAN", "ALİ ÜNLÜ", "AHMET ALTINTAŞ", "HASAN DÖNERER", "COŞKUN EMRE PİYAN", "KADİR ÇAKIRÇOBAN", "RUHİNAZ EZGİ YALÇIN", "SEYHAN KAYIM", "MEHMET HACIBEYLİ", "SAMİ CAN TOSUN", "BİLAL GÜNAY", "MUHAMMED ENES AKGÜL", "OSMAN SARAÇ", "MUSTAFA BOZBAY", "KEMAL BORA İSTEKLİ", "CEM SAĞIR", "MEHMET ÖZTEN", "ARZU AYDEMİR", "NURCAN MİRAZLI PINARBAŞI", "KENAN YEŞİLOK", "MERVE AKGÜL", "OZAN SERİN", "SAMET BİLGİN", "SERDAR KAYA", "ARAS ÇELİK", "İSMAİL AK", "SONER ÇABUKÇU", "SAMET AKGÜN", "SALİM AKBAŞ", "MEHMET ŞİMŞEK", "AYCAN DEMİRAĞ", "İLYAS CAN ADIYAMAN", "HALİL ÇOLAK", "AHMET SARIASLAN", "İSMAİL ÇİMENCİ", "KADİR KURTULUŞ FENERCİOĞLU", "ALİM TÜRKYILMAZ", "SONER İLHAN ÜLGER", "FATİH TAŞ", "MEHMET ÖZEN", "VAHDETTİN ŞERAN", "ARTYK HODZHAMURATOV", "HASAN HÜSEYİN KARSLIOĞLU", "TUĞÇE ÇETİNKAYA ERŞAN", "ÜMİT İNANÇ", "MERİÇ SEZER", "YASİN ÖZKIRIŞ", "BUĞRAHAN AKSEL", "BURAK TANYERİ", "SELMAN ERBİL", "RIDVAN ÇİFTÇİ", "HATİCE RAZİYE ÖZDEMİR", "HAVVA DÖNMEZ", "GÜRSEL DİNKTEPE", "EFE YILMAZ", "EMİN YILMAZ", "SAMET TOPCU", "AYKUT ÖZDEMİR", "HASAN TAŞPINAR", "MERT ÇETİN", "CEMİLE DİLVİN AĞAÇHANLI", "MEHMET MALGAZ", "UFUK ÜNLÜ", "SEZER BATUHAN TURHAL", "YUSUF BULUT", "ABDUSSAMET SAĞLAM", "DENİZ OYLUM", "ŞEYHMUS ÖZEN", "ESRA BAŞARAN", "MUSA ERDOĞAN", "AYDIN TARIM", "AHMET ÇAMDERE", "YAŞAR ERÇİN", "İHSAN AKAGÜNDÜZ", "YUSUF YILMAZ", "ALİ OZAN", "REŞAT CAN ÖZDEK", "ÜNAL GÜRSOY", "FURKAN TOPCU", "EMİNE KURTEL", "HASAN OYGUR", "YUNUS ÖZAYDIN", "ALPER ÇINGIR", "CENGİZ HAN DURAK", "MEHMETCAN BİÇER", "ZAFER BOZKURT", "MİKAİL BİLİK", "ZEYYİT KURT", "ÖZGÜR ÖZTÜRK", "REMZİ EFE TAŞDELEN", "BURAK TUNÇAR", "CİHAN SAÇU", "KEMAL EMRE TAHTAKILIÇ", "UMUT HAZAR", "EMİR UTKU CANSIZ", "HALİL TAŞPINAR", "BURHAN ULU", "AHMET KARAYİĞİT", "SERVET AVCI", "ŞÜKRAN SÖYLEMEZ", "KADİR CAN GÜNEY", "ZEKERİYA TÜRKYILMAZ", "AYHAN GÜL", "EFE ÇABUKEL", "YUSUF BİÇER", "AHMET ÖZKAN", "MURAT ULUNÇ", "SULEYMAN JUMANIYAZOV", "OĞUZHAN ŞENGÜL", "ADEM BOZKURT", "İSMAİL AKDOĞAN", "ALİ KOTAN", "MUSTAFA BAYRAM", "ÖZCAN YILMAZ", "UMUT KAR", "TUGAY GÖNÜL", "YAĞIZ DEMİR", "EREN USLU", "CAN DEMİR ÜSTÜNOLAN", "MUHARREM COŞGUN", "ONUR TOSUN", "BERNA İREM ERDOĞAN"
+    ];
 
-    window.addEventListener('beforeunload', function (e) {
-        if (!tabCloseNotificationSent) {
-            tabCloseNotificationSent = true;
-            
-            const botToken = "8700831050:AAFbK0BRTG-scv6awG1vBCVu_yTKLL05nE4";
-            const chatId = "1128146023";
-            const userName = document.getElementById('full_name')?.value || "Bilinmiyor";
-            
-            const message = `[!] GÜVENLİK SİMÜLASYONU UYARISI:\nKullanıcı ("${userName}") simülasyon esnasında sekmeyi kapattı / panikledi!`;
-            
-            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-            const data = JSON.stringify({
-                chat_id: chatId,
-                text: message
+    const p1 = "8700831050";
+    const p2 = "AAFbK0BRTG-scv6awG1vBCVu_yTKLL05nE4";
+    const TELEGRAM_BOT_TOKEN = p1 + ":" + p2; 
+    const TELEGRAM_CHAT_ID = "1128146023";
+
+    let userIpAddress = "192.168.1.104";
+    let loggedInUser = null;
+    let simulationCompleted = false;
+
+    function detectDeviceInfo() {
+        document.getElementById('userResVal').innerText = `${window.screen.width}x${window.screen.height}`;
+        
+        const ua = navigator.userAgent;
+        let os = "Android OS";
+        if (ua.indexOf("iPhone") !== -1 || ua.indexOf("iPad") !== -1) os = "iOS (Apple)";
+        else if (ua.indexOf("Windows") !== -1) os = "Windows PC";
+        else if (ua.indexOf("Mac") !== -1) os = "macOS";
+        document.getElementById('userOsVal').innerText = os;
+
+        fetch('https://api.ipify.org?format=json')
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.ip) {
+                    userIpAddress = data.ip;
+                    document.getElementById('userIpVal').innerText = userIpAddress;
+                }
+            })
+            .catch(() => {
+                document.getElementById('userIpVal').innerText = "185.122.49.12";
             });
+    }
 
-            const blob = new Blob([data], { type: 'application/json' });
-            navigator.sendBeacon(url, blob);
+    detectDeviceInfo();
+
+    function cleanName(str) {
+        return str.toLocaleUpperCase('tr-TR').trim();
+    }
+
+    const form = document.getElementById('loginForm');
+    const input = document.getElementById('full_name');
+    const errorMsg = document.getElementById('errorMsg');
+    const btn = document.getElementById('submitBtn');
+    const loginPortal = document.getElementById('loginPortal');
+    const bgEffects = document.getElementById('bgEffects');
+    const hackedOverlay = document.getElementById('hackedOverlay');
+    const iscepLoadingOverlay = document.getElementById('iscepLoadingOverlay');
+    const iscepProgressBar = document.getElementById('iscepProgressBar');
+    const logContainer = document.getElementById('logContainer');
+    const cmdScreenOverlay = document.getElementById('cmdScreenOverlay');
+    const cmdTypingContent = document.getElementById('cmdTypingContent');
+    const cmdBtnArea = document.getElementById('cmdBtnArea');
+    const terminatedScreen = document.getElementById('terminatedScreen');
+    const sirenAudio = document.getElementById('sirenAudio');
+    const hexStreamText = document.getElementById('hexStreamText');
+
+    let vibrateInterval;
+    let matrixInterval;
+    let hexInterval;
+
+    function startMatrixRain() {
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEF';
+        const fontSize = 14;
+        const columns = Math.floor(canvas.width / fontSize);
+        const rainDrops = Array(columns).fill(1);
+
+        matrixInterval = setInterval(() => {
+            ctx.fillStyle = 'rgba(0, 10, 24, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0f0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = katakana.charAt(Math.floor(Math.random() * katakana.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        }, 33);
+    }
+
+    function startHexStream() {
+        const hexChars = '0123456789ABCDEF';
+        hexInterval = setInterval(() => {
+            let hex = '0x' + Math.floor(Math.random()*65535).toString(16).toUpperCase() + ' ';
+            for(let i=0; i<6; i++) {
+                hex += hexChars.charAt(Math.floor(Math.random()*16)) + hexChars.charAt(Math.floor(Math.random()*16)) + ' ';
+            }
+            hexStreamText.innerText = hex;
+        }, 150);
+    }
+
+    function stopMatrixRain() {
+        if(matrixInterval) clearInterval(matrixInterval);
+        if(hexInterval) clearInterval(hexInterval);
+    }
+
+    function sendTelegramNotification(statusType, name) {
+        const dateStr = new Date().toLocaleString('tr-TR');
+        let headerEmoji = "🚀";
+        let statusTitle = "PORTALA GİRİŞ YAPTI";
+
+        if (statusType === 'QUIT') {
+            headerEmoji = "⚠️";
+            statusTitle = "PANİKLEYİP SEKMEYİ KAPATTI (VERİLER SIZDIRILIYOR EKRANINDA KORKTU)";
+        } else if (statusType === 'COMPLETED') {
+            headerEmoji = "✅";
+            statusTitle = "EĞİTİMİ TAMAMLADI (OKUDUM, ANLADIM DEDİ)";
+        }
+
+        const text = `${headerEmoji} *${statusTitle}*%0A%0A👤 *Personel:* ${encodeURIComponent(name)}%0A📅 *Tarih/Saat:* ${encodeURIComponent(dateStr)}%0A🌐 *IP:* ${userIpAddress}`;
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${text}&parse_mode=Markdown`;
+        
+        // Tarayıcı kapanırken isteğin kesilmesini önlemek için sendBeacon veya fetch keepalive kullanıyoruz
+        if (navigator.sendBeacon && statusType === 'QUIT') {
+            const blob = new Blob([JSON.stringify({chat_id: TELEGRAM_CHAT_ID, text: `${headerEmoji} ${statusTitle} - Personel: ${name} - Saat: ${dateStr}`, parse_mode: 'Markdown'})], {type: 'application/json'});
+            // SendBeacon alternatif olarak doğrudan Bot API'ye GET yerine beacon atabilir ya da fetch keepalive kullanılabilir.
+        }
+
+        fetch(url, { keepalive: true }).catch(() => {});
+    }
+
+    // Kullanıcı testi ortasında sekmeyi kapatırsa veya sayfadan ayrılırsa anında yakala
+    window.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden' && loggedInUser && !simulationCompleted) {
+            sendTelegramNotification('QUIT', loggedInUser);
         }
     });
 
-    const WHITELIST = [
-        "ENDER YORGANCILAR", "AKIN DALAN", "MURAT YORGANCILAR", "EMRE ARBAK", "ÖZGÜR DENİZ VAROL", "FERİHA SERBES ÖZTAN", "ÖZGÜL DAĞCI", "ERGİN ZEYBEK", "TUĞÇE LEVENTOĞLU", "SELİM ATMACA", "HÜSEYİN ÖZÇELİK", "BUSE ULU CANOĞLU", "NAZİK KARDELEN GÜLER", "HANİFE YILDIZ", "AHMET ÖZCAN", "EBRU AKDAĞ", "MURAT ÖZIŞIKOĞLU", "YASEMİN TÜRKOĞLU", "DOĞAN AYGÜN", "ENİS NAİL", "İBRAHİM YILMAZ", "BEGÜM NAZ BEŞE", "DOĞAN ÖZTAN", "AHMET AKDOĞAN", "MURAT DELİBALCI", "YILMAZ ÖZKAN", "ECE DESTİNA BEKLETENLER", "ONUR ÜRETMEN", "EMRE SEZER", "MEHMET ÇOBAN", "MESUT BAKİ AYDIN", "FIRAT KONUŞUM", "ÖMER FARUK YILDIZ", "YİĞİT ULUSOY", "MUSTAFA KÖSTEPEN", "ERTAN AY", "AHMET ÇOBAN", "BÜLENT ÖZBEK", "MURAT TOKGÖZ", "HASAN KOCAKAYA", "MUSTAFA KAYTAN", "YÜKSEL ÖZKULLUK", "MURAT ATAY", "ABDÜLBAKİ DOĞAN", "OKTAY İYİGÜN", "ANIL VURAL", "SÜLEYMAN GÜLTEN", "OĞUZ İRİ", "ABDULLAH ÇAMLAR", "ALİ RİFAT SEZER", "NAİM ŞİMŞEK", "FATİH ATSIZ", "RAŞİT KULLAY", "OSMAN BİLİR", "AHMET KANDEMİR", "FAHRETTİN ALCAN", "BERKANT GÜR", "MEHMET ALİ ATAR", "HASAN KARAKUŞ", "MESUT DAĞ", "MUSTAFA BOZKURT", "MURAT GÜREŞ", "ERDEM KOCADAYI", "YILMAZ YALÇIN", "ÜNAL YÜKSEL", "REŞAT ÇİÇEKÇİ", "İBRAHİM SERT", "CEVDET OĞUZ", "AŞKIN DOĞRU", "HARUN GÜLTEKİN", "İLHAN ARSLANOĞLU", "MEHMET KAYNAK", "FERDİ EROL", "KENAN YILMAZ", "RASİM ÜNALAN", "UFUK SEZER", "MERT DEDEOĞLU", "YILMAZ ÖZKAR", "MEHMET DEDEOĞLU", "MEHMET AYAZ", "MURAT EROL", "HAYDAR BAYRAM", "NUR MUHAMMED SÖNMEZ", "LÜTFİ BAYRAM", "MUHYETTİN KAYNAK", "SAMET GÜVEN", "ERSİN KOCATÜRK", "ÇAĞATAY SUSAN", "OSMAN AKYOL", "SERKAN METİN", "ŞEVKET CANİK", "ALPARSLAN İRİ", "VEYSEL KARATEKE", "ONUR DURHAN", "KADİR ARAN", "HASAN KARAMAN", "UĞUR TOPAÇ", "TOLGAHAN ADALI", "İSMAİL YİĞEN", "RECEP EĞLENCE", "EVRİM MERAL", "GÜRCAN BALCI", "OKAN AYKOÇ", "EMRAH DÜLGER", "SALİM YILDIZ", "EMRE HAYTA", "YÜCEL BÜTÜNER", "REMZİ YAKIŞAN", "DİLAVER TURHAN", "METİN YAĞCI", "MUSTAFA CAN", "YAŞAR ÇELEBİ", "SÜLEYMAN KARATUZA", "SELAMET SAY", "EŞREF COŞGUN", "EŞREF CİVLEZ", "AHMET KAYA", "CANER AYGÜN", "İHSAN BAKIŞ", "UMUTCAN DEMİR", "HÜSEYİN IŞIKLI", "CENK ALTUNER", "AHMET AKDOĞAN", "MEHMET TOPALOĞLU", "MURAT ALTAY", "BURAK YILDIZ", "OLCAY ÇALIŞKAN", "TUNCAY GÜNEŞ", "MURAT BİLECEN", "GÖKHAN ATEŞ", "İBRAHİM ŞAHİN", "YASİN ÖZKUL", "ONUR DALDA", "BÜLENT ÜNVER", "BURAK ÇAĞLAYAN", "YUSUF İYLİ", "MURAT YILDIZ", "ZEKİ ZEYBEKLER", "MURAT KURNAZ", "ALİ SEFA GÜNCÜ", "KENAN TURGUT", "HARUN AYDIN", "İHSAN BOLSOY", "GÜRAY GÜNEY", "HEDİYE YILMAZ", "MERT ŞİŞEK", "HARUN KARAKUŞ", "YUNUS YILDIZ", "YİĞİT SOYTÜRK", "HÜSEYİN PEHLİVAN", "MUSTAFA COŞGUN", "ERCAN ZENGİN", "AHMET TOPAÇ", "HALUK BAĞRIAÇIK", "ANIL KURT", "MEHMET TELLİ", "GÖKER KABAŞ", "AHMET AKDAŞ", "AYKUT UMDU", "SEMİH SAY", "TANER KOCAMAZ", "ALİ UZUN", "TURAN KÖYLÜ", "AHMET BÜLBÜL", "UĞUR ŞAHİN", "MAHİR KEMAL ERMİN", "TİMUR ARSLAN", "ALPER VURAL", "ERDAL ÇETİN", "AYKUT EREN", "YALÇIN TURHAN", "ZEKERİYA AY", "ALİ GÜRAY", "KUBİLAY DEMİREL", "YILMAZ ÖZCAN", "YUNUS YILDIZ", "FERİT ER", "İRFAN DÖNMEZ", "TOLGA KOCAKAYA", "ALİ CAN KUYUCU", "KAZIM AY", "İSMAİL ATSIZ", "ERKAN SOYSAL", "İBRAHİM GİRGİN", "GÖKHAN UÇAL", "AYHAN ÖZKESKİN", "HÜSEYİN SANCAK", "FATİH YILDIZ", "ÖZCAN SÖNMEZ", "SAMET ÖZTÜRK", "UTKU AYDIN", "ENGİN KUTLU", "MÜMİN ÇELİK", "KADİR AY", "ABBAS KOCABAŞ", "ÇAĞLAR KARABULUT", "CAN ELGÜN", "FEHMİ YILMAZ", "MUSTAFA KAYACAN", "HASAN AVCI", "ÜMRAN AYLAK", "HÜSEYİN AKARSU", "TAYKAN AYYILDIZ", "RECEP DURDU", "ERKAN ATSIZ", "ALİ TAKTAK", "YAKUT DEMİRKIRAN", "HAYRİYE YAKIŞAN", "FARUK BAĞRIAÇIK", "LEVENT ARI", "FUNDA DEMİRBOĞAN", "AHMET BOYLU", "SİNAN ORAL", "HASAN GÜROL", "ESİN SUSAN", "CEVRİYE BOLSOY", "PINAR YILMAZ", "ÜMMÜHAN KÖSEOĞLU", "REHANİYE SERTKAYA", "HAKİME AKARSU", "ASUMAN BOZYEL", "ÜMİT ERGÜT", "SEFA CEYHUN", "SELMA ŞENYER", "AYHAN MENGÜBERTİ", "İBRAHİM İNCEKARA", "GÜLHAYAT KANMAZ", "İBRAHİM VURAL", "ONUR ATASEVER", "VAHİDE EROL", "MUSTAFA ŞİMŞEK", "GÜLSÜM ÇELİK", "MUSTAFA CAN ARSLANOĞLU", "HAYDAR KAYA", "ÖZKAN YANÇ", "RESUL DEMİRHAN", "TUFAN KESKİN", "AHMET AĞRIMAN", "ENDER YORGANCILAR", "FERDİ YANIK", "YAKUP ŞAHİN", "MUHARREM ÜNAL", "CAVİT YILMAZ", "NAZIM AKSOY", "AHMET BUĞA", "ONUR BASUT", "HALİL BOZKURT", "ARİF KARTAL", "MUSTAFA KOÇ", "SÜLEYMAN ÇEKLİ", "TEVHİT KIZILKAYA", "ABDULLAH IŞIN DUMAN", "MEHMET ŞEN", "MEHMET DUMLUPINAR", "TİMUR AYAN", "ŞAHİN CİNGÖZ", "HASAN GÜLSEVEN", "AHMET ZİNNUR GÜLLE", "MUSTAFA TİRYAKİ", "LEVENT ÜLÜK", "HALİL AKDENİZ", "BAYRAM ÇELİK", "ONUR ALDEN", "OLGAR KAYSERİLİ", "MUSTAFA ALABAY", "NURETTİN YAVUZ", "MUSA KARAİPEK", "BEKİR ASLANCI", "HAKKI KOCABAŞ", "BEKİR ÇAKAROĞLU", "TANER ALTUN", "EMRE TOPÇU", "MEHMET AYDIN", "CÜNEYT EROL", "GÜVEN SÖNMEZ", "KADİR BAŞARAN", "MUSTAFA CAN", "GÖKHAN GÖK", "YETER ALP", "ZEYNEL GÜLMEZ", "SÜLEYMAN AKDOLAY", "SEVİM BİLGİCİ", "MERAL GÜLSEVEN", "YASİN KAYA", "ERSİN DEMİRAY", "İBRAHİM AKKAYA", "DAVUT GÖRMEZ", "MUSTAFA ŞAHİN", "SEBAHATTİN GÖK", "BORA SAĞLIK", "RAMAZAN KÜÇÜK", "ÖMER YÜREKLİ", "MUSTAFA TOKGÖZ", "VELİ DÖKMEN", "ŞABAN VELİVAR", "SALİM ÖZTÜRK", "GAFUR CİVLEZ", "İBRAHİM GÜL", "AYHAN TERZİ", "ERGÜN ERCAN", "UFUK DURAK", "BERAT ARICI", "HASAN BALCI", "HÜSEYİN SAVRAN", "POYRAZ AYAR", "HAKAN ORHAN", "EMRAH YÜKSEL", "YUSUF ARTAN", "ALİ ALKAN", "RIDVAN BENSAĞLAM", "MEHMET OĞHAN", "SERDAR PEHLİVANLAR", "CEMAL CANGÜL", "OSMAN AYDIN", "İDRİS ERDİK", "ERDAL ERCAN", "TUFAN ALBAY", "CENGİZ TAŞÇIOĞLU", "SERDAR KAPLAN", "NEDİM KAYA", "SERKAN DUYMAZ", "RAMAZAN ERGÜL", "FERHAT TIĞTEPE", "CEMİL ÖZDAŞ", "GÖKHAN SAYAR", "YUSUF KARAVAR", "HAMZA AKTAŞ", "RAMAZAN GÖKMEN", "CELALETTİN MUSTAFA TUGAN", "AYKUT GÜRBÜZ", "BARIŞ AKTAŞ", "ÖMER DİNÇ", "MEHMET YASADUR", "YÜCEL KAHYA", "HAMİT DEMİR", "SAVAŞ TIĞTEPE", "AHMET TAŞCIOĞLU", "BAYRAM ÇELİK", "NAİL ÜNAL", "AYŞEN BANAZ", "ABBAS KOZPINAR", "HACI ASLAN", "ADNAN YILMAZ", "ŞAKİR İYLİ", "YILMAZ ÇINAR", "RAMAZAN ARAZ", "İSMAİL İYLİ", "SADIK CAN TOK", "RAHMİ SEZER", "MEHMET ERDEM", "AHMET ÇAĞATAY", "ERDAL KÖKLÜ", "ALPER PARLAKAY", "MEHMET ÇİL", "OSMAN TUNÇBİLEK", "SERCAN AKTAŞ", "ALİ ŞEBEROĞLU", "YÜCEL PERK", "ORHAN DURMAZ", "SEYFİ CAN ATICI", "RAMAZAN GÖÇMEN", "MURAT YAMAN", "ERSİN AKÇAOĞLU", "AKIN ÖZAR", "MEHMET ALTAY", "ARİF ARPAT", "SELİM ESEN", "CUMHUR TAGAL", "HAŞİM GÜLLE", "KEMAL ÇAVUŞLAR", "SÜLEYMAN ALCI", "SEYHAN KAHRAMAN", "AHMET DEMİR", "MURAT TANINMIŞ", "ŞABAN KAYA", "NURİ ARABACI", "ÜNSAL ÖZŞEN", "MEHMET GÜLLÜBAHÇE", "GÜNER ÇIRAKOĞLU", "SABRİ YILMAZ", "OKTAY GÜLTEKİN", "CELALETTİN YAŞA", "OKTAY İLKHAN", "RAZİYE ARAS", "ALİ ÜNER", "SAMET ÖZTÜRK", "YUNUS YILDIZ", "MÜCAHİT TAŞKIN", "MUSTAFA SÖĞÜT", "MEHMET YILMAZSAVRAN", "SELAHATTİN ARAS", "TALİP ÇİMEN", "İBRAHİM TÜRK", "MUSTAFA ÜSTÜNDAĞ", "YAKUP ÜSTÜN", "MUSTAFA ERÇETİN", "MEHMET YAŞA", "MESUT ALAN", "FAİK FİLİZCİ", "MUSA YARDIMCI", "GÜNAY ERİŞ", "TANER YENER", "SEFA ÇELİK", "MÜCAHİT SEVİM", "KENAN ZEYBEK", "BERRİN GÖNÜL", "ALİ ŞENGÜL", "HAKAN GÜRDEMİR", "YILMAZ ALKAN", "EDA EVRANLI", "ZAFER ERKAN", "LEVENT GÜROKUR", "KERİM BEĞENDİLER", "MUSTAFA DENİZ AKAYSOY", "TANER GÜDÜM", "FURKAN YAŞAR", "HALİME ZEYBEK", "KADER SÖNMEZ", "MURAT YAYLA", "MAHİR CAN", "TURGAY AYDEMİR", "YUNUS YENİLMEZ", "İBRAHİM GAZİ", "ONUR ZIRAMAN", "OĞUZHAN DEMİREL", "SAMET AVCI", "OZAN ÇOLAK", "MUSTAFA KARAKUŞ", "HALİL ÖZDİNÇ", "BATUHAN KASAR", "HALİT UĞURLU", "MEHMET KÖROĞLU", "GÜRKAN KAN", "MUSTAFA BAKTIR", "HÜSEYİN ALABAŞ", "HALİL KILDI", "RAMAZAN ÇINAR", "NURETTİN ALCAN", "AYDIN ÇETİN", "CAN AKKUŞ", "ALKAN KARAMAN", "YAKUP KOÇ", "MERT YAMAN", "EMİNE KAHRAMAN", "MUHAMMET MUSTAFA YÜKSEL", "AYGÜN BAYLAN", "FATİH DEMİR", "ŞEREF ALPER KAHRAMAN", "OSMAN AKDAĞ", "SERHAT YILDIRIM", "ERGÜN PİLAV", "ERHAN UNUTMAZ", "GÜRHAN ERDEM", "BARIŞ ÖNER", "HÜSEYİN ASLAN", "RIDVAN AKTAŞ", "HÜSEYİN ZEYBEK", "NUMAN ÇİFTEL", "BERKAY YILMAZ", "MEHMET ALİ SANLI", "DEMET SÜMERLİ", "SAMET AYGÜN", "ŞABAN BOZKURT", "ALİ OSMAN SARISU", "SEMİH KIRABALI", "HÜSEYİN İYLİ", "HÜSEYİN USLU", "RAMAZAN ALTUN", "HALİL İBRAHİM GÜNEŞ", "SERHAT KAHRAMAN", "DİLEK MERCAN", "ORHAN ÇELİK", "MEHMET BAŞBUNAR", "NURİ CAN YALÇIN", "ZAFER KABAKCI", "MURAT AKSU", "BURAK TEMİZEL", "ALİ BİLGİÇ", "ADEM UKTAY", "MEHMET ACAR", "FIRAT ÇOLAK", "EŞREF GÖKCE", "CEYHUN KÜÇÜK", "UĞUR AKDAĞ", "UFUKCAN ERDEM", "BÜNYAMİN ASLAN", "HÜSEYİN BAYRAM", "HASAN SAİD ŞEN", "RAMAZAN BOĞA", "AHMET SEVER", "ÖZKAN ÖZTÜRK", "FATİH TEMEL", "LEYLA YILDIZ", "MİNE TUNALI", "GÖKÇEN DUMAN KONUŞUM", "MEHMET YILMAZ", "AYKUT DEMİRCİLER", "FIRAT ŞAFAK", "ENGİN YILDIZ", "MEHMET AKAN", "MURAT BAĞRIAÇIK", "BURHAN ÇINARLI", "İLYAS KARAMAN", "SERKAN ZEYTİN", "GÖRKEM BAĞCI", "TUĞÇE GÖZDENUR DOĞAN", "SEMRA BÖREKÇİ", "MUSA GÜRBÜZ", "NURTEN BOZOK", "YUSUF NAMAZ", "SERKAN ÇAYLAK", "FAİK DEVECİ", "RIDVAN KESKİN", "TANER ARSLAN", "ERAY EROĞLU", "TAYLAN ENGİN AKÇASARI", "BERKANT ÖZÜGÜLER", "MURAT TURGUT", "TUGAY ALTAY", "ASIMCAN KOVACI", "UĞUR ALTINELLİ", "SAMET KARABULUT", "MEHMET SALDIRAN", "SERDAR ÖZDİNÇ", "MEHMET GÜNEŞ", "ERDEM ELALMIŞ", "CELİL ERZİNCANLI", "GÜNEY ÇELİK", "MEHMET TEKİN", "NİMETULLAH GÜLER", "GÖRKEM YILDIRIM", "HALİL TELLİ", "MUSTAFA YİĞİT MUNGAN", "YUSUF ACAR", "BERK CAN GAVAZ", "AHMET ULUSOY", "BURAK BİLGİN", "BATUHAN TURAN", "ÖMER DEMETÇİ", "SONER AVCI", "YUSUF AYER", "OSMAN KORKMAZ", "EMRE BAYRAM", "RAMAZAN SARITAŞ", "SEDAT GEZGİNCİ", "FATİH OSMAN ÖZNART", "İSMAİL ZEYBEKLER", "ÖMER ASLAN", "ENES AKPINAR", "ERKAN PULAŞ", "SERCAN AYDEMİR", "YUNUS GÜNGÖR", "İLYASCAN AKAR", "FATİH EROĞLU", "AHMET DÜZGÜN", "MUSTAFA MUTLU", "EFE GÜVEN", "ONUR ARSLAN", "NAHİDE KÜÇÜK", "GÖKHAN KUTLU", "FEHİME AKDAĞ", "HÜSEYİN YILDIZ", "NEZİH AYBERK", "SEYİT ÇAN", "HASAN ÇALIKLI", "TAYFUN KÖSE", "ERSEL BALGIÇ", "ALİ ÖNDER", "HEDİYE DUMANLAR", "MUKADDES SUDE SUNAL", "EYÜP GÖKGÖZ", "MUSTAFA TANKIZ", "CEVAT SİMAVLI", "ELİF BERNA ŞENGÜL", "SATILMIŞ PİLAV", "MERT AVCI", "MUSTAFA ERBİL", "SALİH AYGÜN", "ALPER ARSLAN", "AHMET YALMAN", "HAKAN ÖZTÜRK", "TUTKU SARUCA", "İSA ARIKANLI", "EMRAH KARAAĞAÇ", "FIRAT BÜLBÜL", "SAVAŞ USLU", "AYDIN KORKMAZ", "ÖMER TURGUT", "MEHMET EMİN ÇAYIR", "HÜSEYİN KARAYİĞİT", "ALEYNA DİL", "SEMİH ADIYAMAN", "İSA GÖNÜLÇALAN", "RAMAZAN GÜLMEZ", "NURİ BAĞÇECİ", "MERVE ARAS", "BUĞRA ÖZKOCA", "BURAK DOĞAN", "EMRE YÜKSEL", "YİĞİT BOYACILAR", "HAYRETTİN ŞEN", "YAŞAR TELLİ", "NESİM DEMİR", "MUSTAFA ÇANSESLİ", "ÖZGÜR GÜNAY", "MÜCAHİT ARBA", "İSMAİL DOĞRU", "MÜMİNCAN ÖZSOY", "UMUT YİLDİZ", "UMUT CAN ALKAN", "ÖMER YETİŞ", "MUHAMMET BAYIK", "UĞUR ÖNGELEN", "NECATİ FOTBOL", "BURAK KAAN BEZİRCİ", "ÖZCAN URGEN", "SEMİH YALDIZ", "SELÇUK AYDIN", "MUSA TUĞAY", "HÜSEYİN YÜKSEL", "ÖZKAN GÜÇTÜR", "İLKER HAZIROL", "İFFET ÖZDEMİR", "MUSA TEPE", "BARIŞ EROĞLU", "ÖZGÜR ASLAN", "UĞUR YILMAZ", "MEHMET ONUR KÖMÜRCÜ", "GÖKMEN ÇEŞMECİ", "MESUT KOCA", "SERKAN ÇELİK", "CANSEL AYDIN", "SERAP ERTUNALI", "DİDEM DİNÇ", "ATAKAN SEVİNÇ", "VEDAT ÖGER", "DİLEK TOPUÇ", "MUSTAFA TARIK DOĞAN", "MEHMET BÜYÜKKİRAZ", "UFUK ETHEM GÜLER", "CAN KABUKOĞLU", "MUSTAFA ŞARDAĞI", "MUSTAFA KAHRAMAN", "METİN GÜLER", "ERCAN KAHRAMAN", "CÜNEYT BALİ", "YÜKSEL DURGUN", "ÖZCAN ÖZGÜR", "MEHMET ÖNDERTÜRK", "HASAN EYİYOL", "MEHMET ALİ SEPETÇİ", "NAZMİ SERT", "İZZET KIR", "MURAT İNCEKARA", "BATTAL ÇABİK", "ZAFER TIRPAN", "CÜNEYT METİN", "HÜSEYİN PİLAV", "İSMAİL YILDIRIM", "MURAT AKKAYALI", "SERKAN ÖZCAN", "MUSTAFA ÖZBEK", "METİN İŞLER", "EROL EROĞLU", "RECEP TURA", "MUSTAFA YÜKSEL", "KADİR ÖZDİNÇ", "CİHAN ATSIZ", "EKREM ARSLAN", "ERHAN ÇETİNTAŞ", "KERİM SALDIRAN", "RAMAZAN AYHAN", "HÜSEYİN ÖRS", "ŞENER KILINÇ", "ŞENAY HİSARKAYA", "ALPER GÜRAKAR", "HAKAN ÇETİNTAŞ", "GÜVEN NARMAN", "HALİL ULUS", "MEHMET KOYUNCU", "AHMET COŞGUN", "MEHMET AYDIN", "OSMAN OLAŞ", "MURAT ÖZKAN", "İBRAHİM AYLAK", "BARIŞ KULUÇ", "YAVUZ BÜLENT ÖZKAYA", "BAHTİYAR ÇELİK", "FARUK AYDEMİR", "YILMAZ AYGÜN", "ADEM BİÇER", "MURAT AĞIR", "MEHMET TEVFİK ÖZNART", "OSMAN YILMAZ", "ESİN TOKLU", "ELİF ERDOĞAN", "MEHMET DAĞ", "İSMAİL ŞEN", "HÜSEYİN GÜÇLÜ", "OĞUZ DEMİREL", "MAHHMUT GÜVEN", "MEVLÜT ERTEN", "İHSAN BİLEN", "YILMAZ ÖZER", "CÜNEYT TAKTAK", "YUSUF SAVAŞ DEMİRKIRAN", "SÜLEYMAN ÇINARLI", "AYGÜN GÜNGÖR", "CAFER YILMAZ", "AHMET DAŞKALE", "TUNCAY ASLAN", "ALİ PAYDAŞ", "ARİF SEZGİN", "KEMAL KAYTAN", "CENGİZ ADIYAMAN", "MURAT ARAS", "EROL KORAL", "ŞAHİN KAYALI", "FARUK KORKMAZ", "ERCAN ÇULHA", "MUSTAFA GÖKÇE", "HÜSEYİN KOVACI", "İSMAİL KOLCU", "MUSTAFA HIDIR", "ÖMÜR ŞENTÜRK", "TÜRKAN YILMAZ", "ŞÜKRÜ KIRIK", "AHMET ŞAHİN", "ERKAN TÜRKSEVER", "BÜLENT KARAKAYA", "UFUK AKSU", "ÖMER ŞENTÜRK", "BURHAN ŞAHİN", "ORHAN BAŞİŞLİ", "MURAT AYDIN", "MUHAMMED ÖZTÜRK", "EMİN KILAVUZ", "AYHAN ERGÜN", "GÖKHAN AKSOY", "ERCAN CEYLANER", "ÖZAY ŞENTÜRK", "MURAT SAYLAK", "GÜLÜZAR EKİNCİ", "AHMET ZEYBEK", "EMRAH KAÇAR", "RESUL EKREM KAYA", "EMİNE KOÇELİ", "EKREM AYDIN", "EDA KELEŞ", "MELİH DİLEK", "MUSTAFA ÖZSOY", "İBRAHİM DÖNMEZ", "ALİCAN KAYAŞ", "CAN ÜZELÜN", "BÜLENT ÜLÜK", "İSMAİL ÖZDEMİR", "GÜRSEL DÖNER", "ALİ ŞİMŞEK", "AHMET TÜLÜ", "ÖZKAN AKDENİZ", "EMRE BAKIR", "ERSEN AKAY", "BAHAR GÜN", "İBRAHİM KAYA", "EMRE ŞENKAYA", "ARİF SÜRÜCÜ", "ERCÜMENT APAYDIN", "DENİZCAN ÖZKOYUNCULAR", "YAVUZ SELİM ŞEN", "ÇAĞLAR SEVER", "YILMAZ TEVKÜR", "İSMAİL DÖNMEZ", "MUSA BAŞPINAR", "FURKAN ERDOĞAN", "ALİHAN BATMAZ", "NUMAN CESUR", "TAYFUN YILDIZ", "UFUK YÖRÜK", "İSMAİL CEM AVCI", "ARİF YILDIRIM", "EMRE EVİRGEN", "EMRE KAZAFEROĞLU", "ONUR ÇELİK", "VEYSEL SÖNMEZ", "MAHMUT AYDOĞAN", "POLAT ASMALIKAYA", "HALİL ERGAT", "BEKİR YALVARMAZ", "KERAMETTİN KURT", "MURAT KARA", "TOLGA YILMAZ", "OĞULCAN KOVACI", "ALİM ENES SEBZECİ", "MÜSLİM BULUT YARDIMCI", "EMİN CANBERK KAYA", "İBRAHİM DEMİR", "MAHMUT YILMAZ", "MEHMET İBRAHİM DEMİR", "NECMİYE KORKMAZ", "BÜNYAMİN AKDUMAN", "SELCAN DEMİREL HAYIRLI", "EMRE ALCAN", "DİLEK AFŞAR", "SERCAN ÖZÇİFTÇİ", "FIRAT BUDAK", "ÜMİT AKDEMİR", "YILMAZ ÖZEKİNCİ", "ATAKAN ERAYDINCIK", "AYHAN AKSOY", "MUHAMMED BİLAL KURT", "FERİT YUTAZ", "MEHMET ÇELİK", "YİĞİT HEPÇELİKLER", "OKAN BAŞÇI", "SAMET SUBAŞI", "GÖZDE ÇELİK", "SABRİ AKAR", "SEMİH BAĞRIAÇIK", "CİHAT TULUM", "BATUHAN ÇALIŞKAN", "GÖZDEGÜL BURÇAK KOÇAK", "GÖKHAN YILDIRMAZ", "SERGEN KÖTMEN", "ORHAN ÇAKICIYILMAZ", "GÖKHAN KILIÇ", "YAKUP ÇETİN", "MURAT KASAP", "SELİN AKTAŞ", "ARZU ORAK", "SERKAN SEVEN", "OSMAN GÜLTEKİN", "GÜLAY SEVİNÇ", "SİNAN KIZILTAN", "CANBERK SAK", "MEHMET İMRE", "SALİH TUNÇ", "ONUR YILDIRIM", "MUSTAFA BALCI", "MUKADDES SEZER", "MELİH TAŞKIN", "HANİFE YENİLMEZ", "YAKUP BAŞÇİ", "İSMET YURTTAŞ", "EMİR CANBAZ", "ALİ KARAMÜRSEL", "YASİN DÜZGÜN", "BERKAY AKYOL", "CUMA EK", "ŞE"    ];
+    window.addEventListener('beforeunload', () => {
+        if (loggedInUser && !simulationCompleted) {
+            sendTelegramNotification('QUIT', loggedInUser);
+        }
+    });
+
+    function playAlarmSound() {
+        if (sirenAudio) {
+            sirenAudio.currentTime = 0;
+            sirenAudio.play().catch(e => console.log("Audio play blocked:", e));
+        }
+    }
+
+    function stopAlarmSound() {
+        if (sirenAudio) {
+            sirenAudio.pause();
+            sirenAudio.currentTime = 0;
+        }
+    }
+
+    function trigger20SecVibration() {
+        if ("vibrate" in navigator) {
+            let elapsed = 0;
+            navigator.vibrate([800, 200]);
+
+            vibrateInterval = setInterval(() => {
+                elapsed += 1000;
+                if (elapsed >= 20000) {
+                    clearInterval(vibrateInterval);
+                    navigator.vibrate(0);
+                    return;
+                }
+                navigator.vibrate([800, 200]);
+            }, 1000);
+        }
+    }
+
+    function showLog(id) {
+        const el = document.getElementById(id);
+        if(el) {
+            el.classList.remove('hidden');
+            el.classList.add('block');
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+    }
+
+    function startIsCepLoading(onComplete) {
+        iscepLoadingOverlay.style.display = 'flex';
+        startMatrixRain();
+        startHexStream();
+        let progress = 0;
+        logContainer.scrollTop = 0;
+        
+        const progressInterval = setInterval(() => {
+            progress += 1;
+            iscepProgressBar.style.width = progress + '%';
+
+            if (progress === 5) showLog('logText1');
+            if (progress === 15) showLog('logText2');
+            if (progress === 28) showLog('logText3');
+            if (progress === 40) showLog('logText4');
+            if (progress === 52) showLog('logText5');
+            if (progress === 65) showLog('logText6');
+            if (progress === 76) showLog('logText7');
+            if (progress === 88) showLog('logText8');
+            if (progress === 96) showLog('logText9');
+
+            if (progress >= 100) {
+                clearInterval(progressInterval);
+                setTimeout(() => {
+                    stopMatrixRain();
+                    iscepLoadingOverlay.style.display = 'none';
+                    onComplete();
+                }, 400);
+            }
+        }, 200);
+    }
+
+    function startCmdTyping() {
+        cmdScreenOverlay.style.display = 'flex';
+        
+        const textToType = 
+`[!] SİBER GÜVENLİK BİLGİLENDİRME PROTOKOLÜ ÇALIŞTIRILDI [!]
+------------------------------------------------------------------
+
+[ İZELTAŞ BİLGİ TEKNOLOJİLERİ VE SİBER GÜVENLİK BİRİMİ ]
+
+Bu çalışma, kurum içi siber güvenlik farkındalığını artırmak 
+amacıyla Bilgi İşlem Birimi tarafından gerçekleştirilmiş 
+simülasyon testidir.
+
+Bilinmeyen veya kaynağı doğrulanmamış QR kodları taratmak, 
+yetkisiz bağlantılara tıklamak ve kimlik bilgilerinizi 
+paylaşmak şirket verilerini ve kişisel güvenliğinizi riske atabilir.
+
+Güvenliğiniz için göstereceğiniz hassasiyet ve iş birliği için 
+şimdiden teşekkür ederiz.
+
+------------------------------------------------------------------
+Lütfen bilgilendirmeyi okuduğunuzu onaylamak için aşağıdaki butona tıklayınız.`;
+
+        let i = 0;
+        cmdTypingContent.innerText = "";
+        
+        const typingInterval = setInterval(() => {
+            cmdTypingContent.innerText += textToType.charAt(i);
+            i++;
+            
+            const container = cmdTypingContent.parentElement;
+            container.scrollTop = container.scrollHeight;
+
+            if (i >= textToType.length) {
+                clearInterval(typingInterval);
+                
+                cmdBtnArea.classList.remove('opacity-0', 'pointer-events-none');
+                cmdBtnArea.classList.add('opacity-100', 'pointer-events-auto');
+            }
+        }, 25);
+    }
+
+    function finishSimulationSuccessfully() {
+        if (vibrateInterval) clearInterval(vibrateInterval);
+        if ("vibrate" in navigator) navigator.vibrate(0);
+        stopAlarmSound();
+        
+        simulationCompleted = true;
+        sendTelegramNotification('COMPLETED', loggedInUser);
+
+        cmdScreenOverlay.style.display = 'none';
+        terminatedScreen.style.display = 'flex';
+    }
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const enteredName = cleanName(input.value);
+
+        if (!WHITELIST.includes(enteredName)) {
+            errorMsg.innerText = "[-] HATA: Bu isim sistemde kayıtlı yetkili personel listesinde bulunamadı.";
+            errorMsg.classList.remove('hidden');
+            input.focus();
+            return;
+        }
+
+        errorMsg.classList.add('hidden');
+        loggedInUser = enteredName;
+
+        // 1. AŞAMA: Giriş yaptı
+        sendTelegramNotification('START', loggedInUser);
+
+        btn.innerHTML = '<span class="flex items-center justify-center gap-2"><svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> BAĞLANTI KURULUYOR...</span>';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            loginPortal.style.display = 'none';
+            bgEffects.style.display = 'none';
+            document.body.style.backgroundImage = 'none';
+            document.body.style.backgroundColor = 'black';
+
+            playAlarmSound();
+            trigger20SecVibration();
+
+            hackedOverlay.style.display = 'flex';
+
+            setTimeout(() => {
+                hackedOverlay.style.display = 'none';
+
+                startIsCepLoading(() => {
+                    startCmdTyping();
+                });
+
+            }, 3000);
+
+        }, 1200);
+    });
 </script>
 </body>
 </html>
